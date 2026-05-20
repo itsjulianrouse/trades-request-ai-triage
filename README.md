@@ -231,3 +231,33 @@ Content-Type: application/json
 ```http
 GET /requests
 ```
+
+
+## Future Enhancements
+
+Optional next steps:
+
+- Add real AI classification through OpenAI or Azure OpenAI
+- Add Supabase persistence
+- Add technician assignment rules
+- Add customer SMS/email notifications
+- Add photo upload for roof and plumbing issues
+- Add calendar scheduling
+- Add CRM integration
+- Add after-hours escalation flows
+- Add role-based access control
+- Add analytics by trade, urgency, revenue opportunity, and response time
+
+## Portfolio Notes
+
+> AI-assisted trades intake and dispatch reference architecture.
+
+The full architecture package:
+
+- Business problem framing
+- Trade-specific workflow
+- Domain-specific data model
+- Human review controls
+- Security and privacy notes
+- ADRs
+- Cloud-ready folder structure
