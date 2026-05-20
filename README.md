@@ -76,3 +76,158 @@ It demonstrates:
 - Security and privacy awareness
 - Cloud-ready deployment structure
 - Documentation through architecture decision records
+
+## High-Level Architecture
+
+```mermaid
+flowchart TD
+    A[Customer Request: Web Form, Call Summary, Email, SMS] --> B[Intake API]
+    B --> C[AI Classification Layer]
+    C --> D[Trade, Service Type, Urgency, Risk Score]
+    D --> E[Routing Engine]
+    E --> F{Human Review Needed?}
+    F -->|Yes| G[Dispatcher Review Queue]
+    F -->|No| H[Dispatch Ready Queue]
+    G --> I[Assign Technician or Estimator]
+    H --> I
+    I --> J[Customer Follow-up and Job Record]
+    B --> K[Audit Log]
+    C --> K
+    E --> K
+    G --> K
+```
+
+## Core Workflow
+
+1. A customer submits a service request.
+2. The intake API stores the request.
+3. The AI layer classifies the trade, service category, urgency, and safety risk.
+4. The routing engine recommends a queue.
+5. Emergency and uncertain requests are flagged for human review.
+6. A dispatcher confirms routing and technician assignment.
+7. All decisions are captured in the audit log.
+
+## Example Classification Output
+
+```json
+{
+  "trade": "plumbing",
+  "service_type": "burst_pipe",
+  "urgency": "emergency",
+  "risk_score": 95,
+  "recommended_queue": "after_hours_emergency_dispatch",
+  "human_review_required": true,
+  "reason": "Customer reports active water leak and property damage risk."
+}
+```
+
+## Repository Structure
+
+```text
+trades-request-ai-triage/
+├── README.md
+├── docs/
+│   ├── architecture-overview.md
+│   ├── data-model.md
+│   ├── security-and-privacy.md
+│   ├── deployment-notes.md
+│   └── adr/
+│       ├── ADR-001-domain-specific-triage.md
+│       ├── ADR-002-human-in-the-loop-dispatch.md
+│       ├── ADR-003-audit-logging.md
+│       └── ADR-004-cloud-ready-configuration.md
+├── apps/
+│   ├── api/
+│   │   ├── package.json
+│   │   ├── .env.example
+│   │   └── src/
+│   │       ├── index.js
+│   │       ├── classifier.js
+│   │       ├── router.js
+│   │       └── audit.js
+│   └── web/
+│       ├── package.json
+│       ├── index.html
+│       └── src/
+│           ├── App.jsx
+│           └── sampleRequests.js
+├── database/
+│   └── schema.sql
+├── workflows/
+│   └── routing-logic.md
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+└── .gitignore
+```
+
+## Suggested Tech Stack
+
+The sample implementation uses a lightweight JavaScript stack:
+
+- React/Vite for the demo dashboard
+- Express for the mock API
+- PostgreSQL/Supabase-compatible schema
+- Mermaid for architecture diagrams
+- GitHub Actions for basic CI checks
+
+The architecture can also be adapted to Azure, AWS, or a no-code/low-code stack.
+
+## Local Development
+
+### API
+
+```bash
+cd apps/api
+npm install
+npm run dev
+```
+
+The API runs on:
+
+```text
+http://localhost:4000
+```
+
+### Web App
+
+```bash
+cd apps/web
+npm install
+npm run dev
+```
+
+The web app runs on:
+
+```text
+http://localhost:5173
+```
+
+## API Endpoints
+
+### Health Check
+
+```http
+GET /health
+```
+
+### Create Request
+
+```http
+POST /requests
+Content-Type: application/json
+
+{
+  "customerName": "Sam Taylor",
+  "phone": "555-555-0100",
+  "address": "123 Main Street",
+  "message": "Water is leaking from the ceiling under the upstairs bathroom.",
+  "preferredTrade": "plumbing"
+}
+```
+
+### List Requests
+
+```http
+GET /requests
+```
